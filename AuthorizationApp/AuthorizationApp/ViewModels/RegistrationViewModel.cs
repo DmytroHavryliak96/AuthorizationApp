@@ -4,11 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AuthorizationApp.ViewModels.Validations;
-using FluentValidation.Attributes;
 
 namespace AuthorizationApp.ViewModels
 {
-    [Validator(typeof(RegistrationViewModelValidator))]
     public class RegistrationViewModel
     {
         public string Email { get; set; }

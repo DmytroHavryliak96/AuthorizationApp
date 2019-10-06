@@ -15,66 +15,70 @@
           "lib/netstandard2.0/AutoMapper.dll": {}
         }
       },
-      "FluentValidation/6.2.1": {
+      "AutoMapper.Extensions.Microsoft.DependencyInjection/7.0.0": {
         "type": "package",
+        "dependencies": {
+          "AutoMapper": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "2.0.0"
+        },
         "compile": {
-          "lib/Net45/FluentValidation.dll": {}
+          "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
         },
         "runtime": {
-          "lib/Net45/FluentValidation.dll": {}
+          "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
+        }
+      },
+      "FluentValidation/8.5.0": {
+        "type": "package",
+        "dependencies": {
+          "System.ComponentModel.Annotations": "4.4.1"
         },
-        "resource": {
-          "lib/Net45/cs/FluentValidation.resources.dll": {
-            "locale": "cs"
-          },
-          "lib/Net45/da/FluentValidation.resources.dll": {
-            "locale": "da"
-          },
-          "lib/Net45/de/FluentValidation.resources.dll": {
-            "locale": "de"
-          },
-          "lib/Net45/es/FluentValidation.resources.dll": {
-            "locale": "es"
-          },
-          "lib/Net45/fa/FluentValidation.resources.dll": {
-            "locale": "fa"
-          },
-          "lib/Net45/fi/FluentValidation.resources.dll": {
-            "locale": "fi"
-          },
-          "lib/Net45/fr/FluentValidation.resources.dll": {
-            "locale": "fr"
-          },
-          "lib/Net45/it/FluentValidation.resources.dll": {
-            "locale": "it"
-          },
-          "lib/Net45/ko/FluentValidation.resources.dll": {
-            "locale": "ko"
-          },
-          "lib/Net45/mk/FluentValidation.resources.dll": {
-            "locale": "mk"
-          },
-          "lib/Net45/nl/FluentValidation.resources.dll": {
-            "locale": "nl"
-          },
-          "lib/Net45/pl/FluentValidation.resources.dll": {
-            "locale": "pl"
-          },
-          "lib/Net45/pt/FluentValidation.resources.dll": {
-            "locale": "pt"
-          },
-          "lib/Net45/ru/FluentValidation.resources.dll": {
-            "locale": "ru"
-          },
-          "lib/Net45/sv/FluentValidation.resources.dll": {
-            "locale": "sv"
-          },
-          "lib/Net45/tr/FluentValidation.resources.dll": {
-            "locale": "tr"
-          },
-          "lib/Net45/zh-CN/FluentValidation.resources.dll": {
-            "locale": "zh-CN"
-          }
+        "compile": {
+          "lib/netstandard2.0/FluentValidation.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/FluentValidation.dll": {}
+        }
+      },
+      "FluentValidation.AspNetCore/8.5.0": {
+        "type": "package",
+        "dependencies": {
+          "FluentValidation": "8.5.0",
+          "FluentValidation.DependencyInjectionExtensions": "8.5.0"
+        },
+        "compile": {
+          "lib/netcoreapp3.0/FluentValidation.AspNetCore.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/FluentValidation.AspNetCore.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
+      "FluentValidation.DependencyInjectionExtensions/8.5.0": {
+        "type": "package",
+        "dependencies": {
+          "FluentValidation": "8.5.0",
+          "Microsoft.Extensions.Dependencyinjection.Abstractions": "2.1.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/FluentValidation.DependencyInjectionExtensions.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/FluentValidation.DependencyInjectionExtensions.dll": {}
+        }
+      },
+      "FluentValidation.ValidatorAttribute/8.5.0": {
+        "type": "package",
+        "dependencies": {
+          "FluentValidation": "8.5.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/FluentValidation.ValidatorAttribute.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/FluentValidation.ValidatorAttribute.dll": {}
         }
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer/3.0.0": {
@@ -1523,84 +1527,78 @@
         "lib/netstandard2.0/AutoMapper.xml"
       ]
     },
-    "FluentValidation/6.2.1": {
-      "sha512": "/5ERf6sSD8VVQObby24h6GzFB9iLJsA01V0stxJ+6KAAiLVOFJ7cE2EypG2BDOP0B3cYCzTYeJrd0Oyrvnb9Bw==",
+    "AutoMapper.Extensions.Microsoft.DependencyInjection/7.0.0": {
+      "sha512": "szI4yeRIM7GWe9JyekW0dKYehPB0t6M+I55fPeCebN6PhS7zQZa0eG3bgOnOx+eP3caSNoE7KEJs2rk7MLsh8w==",
       "type": "package",
-      "path": "fluentvalidation/6.2.1",
+      "path": "automapper.extensions.microsoft.dependencyinjection/7.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "fluentvalidation.6.2.1.nupkg.sha512",
+        "automapper.extensions.microsoft.dependencyinjection.7.0.0.nupkg.sha512",
+        "automapper.extensions.microsoft.dependencyinjection.nuspec",
+        "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll",
+        "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.pdb"
+      ]
+    },
+    "FluentValidation/8.5.0": {
+      "sha512": "gH9TOcn/l4WEG+h17z9sOPUf8rYX2NKBZ4hQjdPQWLeSyGlUiTCVVv6Dmpg2573Wtl2u1y11YmmhUO31gcZkeQ==",
+      "type": "package",
+      "path": "fluentvalidation/8.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "fluentvalidation.8.5.0.nupkg.sha512",
         "fluentvalidation.nuspec",
-        "lib/Net45/FluentValidation.XML",
-        "lib/Net45/FluentValidation.dll",
-        "lib/Net45/FluentValidation.pdb",
-        "lib/Net45/cs/FluentValidation.resources.dll",
-        "lib/Net45/da/FluentValidation.resources.dll",
-        "lib/Net45/de/FluentValidation.resources.dll",
-        "lib/Net45/es/FluentValidation.resources.dll",
-        "lib/Net45/fa/FluentValidation.resources.dll",
-        "lib/Net45/fi/FluentValidation.resources.dll",
-        "lib/Net45/fr/FluentValidation.resources.dll",
-        "lib/Net45/it/FluentValidation.resources.dll",
-        "lib/Net45/ko/FluentValidation.resources.dll",
-        "lib/Net45/mk/FluentValidation.resources.dll",
-        "lib/Net45/nl/FluentValidation.resources.dll",
-        "lib/Net45/pl/FluentValidation.resources.dll",
-        "lib/Net45/pt/FluentValidation.resources.dll",
-        "lib/Net45/ru/FluentValidation.resources.dll",
-        "lib/Net45/sv/FluentValidation.resources.dll",
-        "lib/Net45/tr/FluentValidation.resources.dll",
-        "lib/Net45/zh-CN/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/FluentValidation.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/FluentValidation.pdb",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/cs/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/da/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/de/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/es/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/fa/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/fi/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/fr/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/it/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/nl/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/pl/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/pt/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/ru/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/sv/FluentValidation.resources.dll",
-        "lib/portable-net40+sl50+wp80+win8+wpa81/zh-CN/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/FluentValidation.XML",
-        "lib/portable-net45+wp80+win8+wpa81/FluentValidation.dll",
-        "lib/portable-net45+wp80+win8+wpa81/FluentValidation.pdb",
-        "lib/portable-net45+wp80+win8+wpa81/cs/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/da/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/de/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/es/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/fa/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/fi/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/fr/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/it/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/nl/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/pl/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/pt/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/ru/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/sv/FluentValidation.resources.dll",
-        "lib/portable-net45+wp80+win8+wpa81/zh-CN/FluentValidation.resources.dll",
-        "lib/uap10.0/FluentValidation.dll",
-        "lib/uap10.0/FluentValidation.pdb",
-        "lib/uap10.0/cs/FluentValidation.resources.dll",
-        "lib/uap10.0/da/FluentValidation.resources.dll",
-        "lib/uap10.0/de/FluentValidation.resources.dll",
-        "lib/uap10.0/es/FluentValidation.resources.dll",
-        "lib/uap10.0/fa/FluentValidation.resources.dll",
-        "lib/uap10.0/fi/FluentValidation.resources.dll",
-        "lib/uap10.0/fr/FluentValidation.resources.dll",
-        "lib/uap10.0/it/FluentValidation.resources.dll",
-        "lib/uap10.0/nl/FluentValidation.resources.dll",
-        "lib/uap10.0/pl/FluentValidation.resources.dll",
-        "lib/uap10.0/pt/FluentValidation.resources.dll",
-        "lib/uap10.0/ru/FluentValidation.resources.dll",
-        "lib/uap10.0/sv/FluentValidation.resources.dll",
-        "lib/uap10.0/zh-CN/FluentValidation.resources.dll"
+        "lib/net45/FluentValidation.dll",
+        "lib/net45/FluentValidation.xml",
+        "lib/netstandard1.1/FluentValidation.dll",
+        "lib/netstandard1.1/FluentValidation.xml",
+        "lib/netstandard1.6/FluentValidation.dll",
+        "lib/netstandard1.6/FluentValidation.xml",
+        "lib/netstandard2.0/FluentValidation.dll",
+        "lib/netstandard2.0/FluentValidation.xml"
+      ]
+    },
+    "FluentValidation.AspNetCore/8.5.0": {
+      "sha512": "D0rR/221hH96QS1OJUBs4ZXlFslOOB4qfVOLcPEf09vjsaI8H29oGWWFi4iawVz1Jstam/ap58RJly6qkZWALA==",
+      "type": "package",
+      "path": "fluentvalidation.aspnetcore/8.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "fluentvalidation.aspnetcore.8.5.0.nupkg.sha512",
+        "fluentvalidation.aspnetcore.nuspec",
+        "lib/netcoreapp3.0/FluentValidation.AspNetCore.dll",
+        "lib/netcoreapp3.0/FluentValidation.AspNetCore.xml",
+        "lib/netstandard2.0/FluentValidation.AspNetCore.dll",
+        "lib/netstandard2.0/FluentValidation.AspNetCore.xml"
+      ]
+    },
+    "FluentValidation.DependencyInjectionExtensions/8.5.0": {
+      "sha512": "C06aJuXUO15IDWoIXwZlRMNguk19jhyDU5uWUvjhp4692dOTnHSDqwJ9xpeuuo0l0Th+uzdgP5+BXZSRZnR5Gw==",
+      "type": "package",
+      "path": "fluentvalidation.dependencyinjectionextensions/8.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "fluentvalidation.dependencyinjectionextensions.8.5.0.nupkg.sha512",
+        "fluentvalidation.dependencyinjectionextensions.nuspec",
+        "lib/netstandard2.0/FluentValidation.DependencyInjectionExtensions.dll",
+        "lib/netstandard2.0/FluentValidation.DependencyInjectionExtensions.xml"
+      ]
+    },
+    "FluentValidation.ValidatorAttribute/8.5.0": {
+      "sha512": "B2pz7phRbQLJLicBfpk0aXKiEbHBtxe0B1EkAVulpB9ys+CbjfwU4PpQpPhIkMQ3GJbMng6Y4Cw90D33JbFQQw==",
+      "type": "package",
+      "path": "fluentvalidation.validatorattribute/8.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "fluentvalidation.validatorattribute.8.5.0.nupkg.sha512",
+        "fluentvalidation.validatorattribute.nuspec",
+        "lib/net45/FluentValidation.ValidatorAttribute.dll",
+        "lib/netstandard1.1/FluentValidation.ValidatorAttribute.dll",
+        "lib/netstandard2.0/FluentValidation.ValidatorAttribute.dll"
       ]
     },
     "Microsoft.AspNetCore.Authentication.JwtBearer/3.0.0": {
@@ -5510,8 +5508,9 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.0": [
-      "AutoMapper >= 9.0.0",
-      "FluentValidation >= 6.2.1",
+      "AutoMapper.Extensions.Microsoft.DependencyInjection >= 7.0.0",
+      "FluentValidation.AspNetCore >= 8.5.0",
+      "FluentValidation.ValidatorAttribute >= 8.5.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 3.0.0",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 3.0.0",
       "Microsoft.EntityFrameworkCore >= 3.0.0",
@@ -5563,13 +5562,17 @@
     "frameworks": {
       "netcoreapp3.0": {
         "dependencies": {
-          "AutoMapper": {
+          "AutoMapper.Extensions.Microsoft.DependencyInjection": {
             "target": "Package",
-            "version": "[9.0.0, )"
+            "version": "[7.0.0, )"
           },
-          "FluentValidation": {
+          "FluentValidation.AspNetCore": {
             "target": "Package",
-            "version": "[6.2.1, )"
+            "version": "[8.5.0, )"
+          },
+          "FluentValidation.ValidatorAttribute": {
+            "target": "Package",
+            "version": "[8.5.0, )"
           },
           "Microsoft.AspNetCore.Authentication.JwtBearer": {
             "target": "Package",
@@ -5629,17 +5632,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'FluentValidation 6.2.1' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v3.0'. This package may not be fully compatible with your project.",
-      "libraryId": "FluentValidation",
-      "targetGraphs": [
-        ".NETCoreApp,Version=v3.0"
-      ]
-    }
-  ]
+  }
 }

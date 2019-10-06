@@ -41,13 +41,17 @@
       "frameworks": {
         "netcoreapp3.0": {
           "dependencies": {
-            "AutoMapper": {
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[7.0.0, )"
             },
-            "FluentValidation": {
+            "FluentValidation.AspNetCore": {
               "target": "Package",
-              "version": "[6.2.1, )"
+              "version": "[8.5.0, )"
+            },
+            "FluentValidation.ValidatorAttribute": {
+              "target": "Package",
+              "version": "[8.5.0, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",

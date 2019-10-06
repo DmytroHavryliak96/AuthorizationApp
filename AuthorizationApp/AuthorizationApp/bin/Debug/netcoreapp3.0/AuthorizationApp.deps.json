@@ -24,7 +24,9 @@
     ".NETCoreApp,Version=v3.0": {
       "AuthorizationApp/1.0.0": {
         "dependencies": {
-          "FluentValidation": "6.2.1",
+          "AutoMapper.Extensions.Microsoft.DependencyInjection": "7.0.0",
+          "FluentValidation.AspNetCore": "8.5.0",
+          "FluentValidation.ValidatorAttribute": "8.5.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "3.0.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.0.0",
           "Microsoft.EntityFrameworkCore": "3.0.0",
@@ -323,68 +325,92 @@
           "AuthorizationApp.dll": {}
         }
       },
-      "FluentValidation/6.2.1": {
-        "runtime": {
-          "lib/Net45/FluentValidation.dll": {
-            "assemblyVersion": "6.2.1.0",
-            "fileVersion": "6.2.1.0"
-          }
+      "AutoMapper/9.0.0": {
+        "dependencies": {
+          "Microsoft.CSharp": "4.6.0",
+          "System.Reflection.Emit": "4.3.0"
         },
-        "resources": {
-          "lib/Net45/cs/FluentValidation.resources.dll": {
-            "locale": "cs"
-          },
-          "lib/Net45/da/FluentValidation.resources.dll": {
-            "locale": "da"
-          },
-          "lib/Net45/de/FluentValidation.resources.dll": {
-            "locale": "de"
-          },
-          "lib/Net45/es/FluentValidation.resources.dll": {
-            "locale": "es"
-          },
-          "lib/Net45/fa/FluentValidation.resources.dll": {
-            "locale": "fa"
-          },
-          "lib/Net45/fi/FluentValidation.resources.dll": {
-            "locale": "fi"
-          },
-          "lib/Net45/fr/FluentValidation.resources.dll": {
-            "locale": "fr"
-          },
-          "lib/Net45/it/FluentValidation.resources.dll": {
-            "locale": "it"
-          },
-          "lib/Net45/ko/FluentValidation.resources.dll": {
-            "locale": "ko"
-          },
-          "lib/Net45/mk/FluentValidation.resources.dll": {
-            "locale": "mk"
-          },
-          "lib/Net45/nl/FluentValidation.resources.dll": {
-            "locale": "nl"
-          },
-          "lib/Net45/pl/FluentValidation.resources.dll": {
-            "locale": "pl"
-          },
-          "lib/Net45/pt/FluentValidation.resources.dll": {
-            "locale": "pt"
-          },
-          "lib/Net45/ru/FluentValidation.resources.dll": {
-            "locale": "ru"
-          },
-          "lib/Net45/sv/FluentValidation.resources.dll": {
-            "locale": "sv"
-          },
-          "lib/Net45/tr/FluentValidation.resources.dll": {
-            "locale": "tr"
-          },
-          "lib/Net45/zh-CN/FluentValidation.resources.dll": {
-            "locale": "zh-CN"
+        "runtime": {
+          "lib/netstandard2.0/AutoMapper.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.0.0"
           }
         },
         "compile": {
-          "lib/Net45/FluentValidation.dll": {}
+          "lib/netstandard2.0/AutoMapper.dll": {}
+        }
+      },
+      "AutoMapper.Extensions.Microsoft.DependencyInjection/7.0.0": {
+        "dependencies": {
+          "AutoMapper": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "3.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "7.0.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
+        }
+      },
+      "FluentValidation/8.5.0": {
+        "dependencies": {
+          "System.ComponentModel.Annotations": "4.6.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/FluentValidation.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.5.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/FluentValidation.dll": {}
+        }
+      },
+      "FluentValidation.AspNetCore/8.5.0": {
+        "dependencies": {
+          "FluentValidation": "8.5.0",
+          "FluentValidation.DependencyInjectionExtensions": "8.5.0"
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/FluentValidation.AspNetCore.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.5.0.0"
+          }
+        },
+        "compile": {
+          "lib/netcoreapp3.0/FluentValidation.AspNetCore.dll": {}
+        }
+      },
+      "FluentValidation.DependencyInjectionExtensions/8.5.0": {
+        "dependencies": {
+          "FluentValidation": "8.5.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "3.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/FluentValidation.DependencyInjectionExtensions.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.5.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/FluentValidation.DependencyInjectionExtensions.dll": {}
+        }
+      },
+      "FluentValidation.ValidatorAttribute/8.5.0": {
+        "dependencies": {
+          "FluentValidation": "8.5.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/FluentValidation.ValidatorAttribute.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.5.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/FluentValidation.ValidatorAttribute.dll": {}
         }
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer/3.0.0": {
@@ -3002,12 +3028,47 @@
       "serviceable": false,
       "sha512": ""
     },
-    "FluentValidation/6.2.1": {
+    "AutoMapper/9.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-/5ERf6sSD8VVQObby24h6GzFB9iLJsA01V0stxJ+6KAAiLVOFJ7cE2EypG2BDOP0B3cYCzTYeJrd0Oyrvnb9Bw==",
-      "path": "fluentvalidation/6.2.1",
-      "hashPath": "fluentvalidation.6.2.1.nupkg.sha512"
+      "sha512": "sha512-xCqvoxT4HIrNY/xlXG9W+BA/awdrhWvMTKTK/igkGSRbhOhpl3Q8O8Gxlhzjc9JsYqE7sS6AxgyuUUvZ6R5/Bw==",
+      "path": "automapper/9.0.0",
+      "hashPath": "automapper.9.0.0.nupkg.sha512"
+    },
+    "AutoMapper.Extensions.Microsoft.DependencyInjection/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-szI4yeRIM7GWe9JyekW0dKYehPB0t6M+I55fPeCebN6PhS7zQZa0eG3bgOnOx+eP3caSNoE7KEJs2rk7MLsh8w==",
+      "path": "automapper.extensions.microsoft.dependencyinjection/7.0.0",
+      "hashPath": "automapper.extensions.microsoft.dependencyinjection.7.0.0.nupkg.sha512"
+    },
+    "FluentValidation/8.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gH9TOcn/l4WEG+h17z9sOPUf8rYX2NKBZ4hQjdPQWLeSyGlUiTCVVv6Dmpg2573Wtl2u1y11YmmhUO31gcZkeQ==",
+      "path": "fluentvalidation/8.5.0",
+      "hashPath": "fluentvalidation.8.5.0.nupkg.sha512"
+    },
+    "FluentValidation.AspNetCore/8.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-D0rR/221hH96QS1OJUBs4ZXlFslOOB4qfVOLcPEf09vjsaI8H29oGWWFi4iawVz1Jstam/ap58RJly6qkZWALA==",
+      "path": "fluentvalidation.aspnetcore/8.5.0",
+      "hashPath": "fluentvalidation.aspnetcore.8.5.0.nupkg.sha512"
+    },
+    "FluentValidation.DependencyInjectionExtensions/8.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-C06aJuXUO15IDWoIXwZlRMNguk19jhyDU5uWUvjhp4692dOTnHSDqwJ9xpeuuo0l0Th+uzdgP5+BXZSRZnR5Gw==",
+      "path": "fluentvalidation.dependencyinjectionextensions/8.5.0",
+      "hashPath": "fluentvalidation.dependencyinjectionextensions.8.5.0.nupkg.sha512"
+    },
+    "FluentValidation.ValidatorAttribute/8.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-B2pz7phRbQLJLicBfpk0aXKiEbHBtxe0B1EkAVulpB9ys+CbjfwU4PpQpPhIkMQ3GJbMng6Y4Cw90D33JbFQQw==",
+      "path": "fluentvalidation.validatorattribute/8.5.0",
+      "hashPath": "fluentvalidation.validatorattribute.8.5.0.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Authentication.JwtBearer/3.0.0": {
       "type": "package",

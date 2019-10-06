@@ -17,7 +17,19 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
+using AutoMapper;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using AuthorizationApp.Auth;
+using AuthorizationApp.Extensions;
+using AuthorizationApp.Helpers;
+using System.Text;
+using System.Net;
+using FluentValidation;
+using AuthorizationApp.ViewModels;
+using AuthorizationApp.ViewModels.Validations;
 
 namespace AuthorizationApp
 {
@@ -36,12 +48,64 @@ namespace AuthorizationApp
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connectionString));
 
-            // add identity
-           /* services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
-            JwtSecurityTokenHandler.DefaultInboundClaimFilter.Clear();*/
+            var key = Configuration.GetSection("JwtKey");
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key.ToString()));
 
-            services.AddMvc();
+            services.AddSingleton<IJwtFactory, JwtFactory>();
+
+            services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
+
+            var jwtAppSettingsOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
+
+            services.Configure<JwtIssuerOptions>(options => {
+                options.Issuer = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Issuer)];
+                options.Audience = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Audience)];
+                options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+                }
+            );
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Issuer)],
+
+                ValidateAudience = true,
+                ValidAudience = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Audience)],
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+
+                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(congigureOptions =>
+           {
+               congigureOptions.ClaimsIssuer = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Issuer)];
+               congigureOptions.TokenValidationParameters = tokenValidationParameters;
+               congigureOptions.SaveToken = true;
+           });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ApiUser", policy => policy.RequireClaim(Constants.Strings.JwtClaimsIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
+            });
+            
+            services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
+            JwtSecurityTokenHandler.DefaultInboundClaimFilter.Clear();
+
+            services.AddAutoMapper(typeof(Startup));
+            services.AddMvc(option => option.EnableEndpointRouting = false);
+
+            services.AddTransient<IValidator<CredentialViewModel>, CredentialsViewModelValidator>();
+            services.AddTransient<IValidator<RegistrationViewModel>, RegistrationViewModelValidator>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,14 +116,35 @@ namespace AuthorizationApp
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseRouting();
+            app.UseExceptionHandler(builder =>
+            {
+                builder.Run(
+                        async context =>
+                        {
+                            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                            context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
-            //app.UseAuthorization();
+                            var error = context.Features.Get<IExceptionHandlerFeature>();
+                            if (error != null)
+                            {
+                                context.Response.AddApplicationError(error.Error.Message);
+                                await context.Response.WriteAsync(error.Error.Message).ConfigureAwait(false);
+                            }
+                        }
+                    );
+            });
 
-            app.UseEndpoints(endpoints =>
+            app.UseAuthentication();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            app.UseMvc();
+
+            /*app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });
+            });*/
+
+
         }
     }
 }

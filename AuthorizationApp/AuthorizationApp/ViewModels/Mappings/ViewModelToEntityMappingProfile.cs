@@ -9,7 +9,7 @@ namespace AuthorizationApp.ViewModels.Mappings
 {
     public class ViewModelToEntityMappingProfile : Profile
     {
-        ViewModelToEntityMappingProfile()
+        public ViewModelToEntityMappingProfile()
         {
             CreateMap<RegistrationViewModel, AppUser>()
                 .ForMember(ap => ap.UserName, map => map.MapFrom(vm => vm.Email));
