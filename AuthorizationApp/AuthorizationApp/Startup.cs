@@ -48,8 +48,9 @@ namespace AuthorizationApp
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connectionString));
 
-            var key = Configuration.GetSection("JwtKey");
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key.ToString()));
+            var appSettings = new AppSettings();
+            Configuration.GetSection("AppSettings").Bind(appSettings);
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings.JwtKey));
 
             services.AddSingleton<IJwtFactory, JwtFactory>();
 
@@ -93,12 +94,16 @@ namespace AuthorizationApp
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("ApiUser", policy => policy.RequireClaim(Constants.Strings.JwtClaimsIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
+                options.AddPolicy("ApiUser", policy => {
+                    policy.RequireClaim(Constants.Strings.JwtClaimsIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess);
+                    policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                    });
             });
             
             services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
-            JwtSecurityTokenHandler.DefaultInboundClaimFilter.Clear();
+           
+            //JwtSecurityTokenHandler.DefaultInboundClaimFilter.Clear();
 
             services.AddAutoMapper(typeof(Startup));
             services.AddMvc(option => option.EnableEndpointRouting = false);
@@ -139,7 +144,7 @@ namespace AuthorizationApp
             app.UseStaticFiles();
             app.UseMvc();
 
-            /*app.UseEndpoints(endpoints =>
+           /* app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });*/

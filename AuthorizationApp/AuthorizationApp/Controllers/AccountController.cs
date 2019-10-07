@@ -8,7 +8,6 @@ using AuthorizationApp.Models;
 using AuthorizationApp.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using AuthorizationApp.DAL;
 
 namespace AuthorizationApp.Controllers
 {
