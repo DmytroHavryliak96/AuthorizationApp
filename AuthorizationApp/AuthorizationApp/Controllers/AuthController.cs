@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AuthorizationApp.Auth;
 using AuthorizationApp.Helpers;
 using AuthorizationApp.Models;
-using AuthorizationApp.Models;
 using AuthorizationApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
@@ -38,12 +37,19 @@ namespace AuthorizationApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            var identity = await GetClaimsIdentity(credentials.UserName, credentials.Password);
+            var user = await GetUser(credentials.UserName, credentials.Password);
 
-            if(identity == null)
+            if(user == null)
             {
                 return BadRequest(Errors.AddErrorToModelState("login failure", "Invalid username or password", ModelState));
             }
+
+            if (!await userManager.IsEmailConfirmedAsync(user))
+            {
+                return BadRequest(Errors.AddErrorToModelState("login failure", "You haven't confirm your email", ModelState));
+            }
+
+            var identity = GetClaimsIdentity(user);
 
             var jwt = await Tokens.GenerateJwt(identity, jwtFactory, credentials.UserName, jwtOptions, new JsonSerializerSettings
             {
@@ -53,21 +59,27 @@ namespace AuthorizationApp.Controllers
             return new OkObjectResult(jwt);
         }
 
-        private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
+        private async Task<AppUser> GetUser(string userName, string password)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
-                return await Task.FromResult<ClaimsIdentity>(null);
+                return await Task.FromResult<AppUser>(null);
 
             var userToVerify = await userManager.FindByNameAsync(userName);
 
-            if (userToVerify == null) return await Task.FromResult<ClaimsIdentity>(null);
+            if (userToVerify == null)
+                return await Task.FromResult<AppUser>(null);
 
-            if (await userManager.CheckPasswordAsync(userToVerify, password))
-                return await Task.FromResult<ClaimsIdentity>(
-                    jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id));
+            if( !await userManager.CheckPasswordAsync(userToVerify, password))
+            {
+                return await Task.FromResult<AppUser>(null);
+            }
 
-            return await Task.FromResult<ClaimsIdentity>(null);
+            return await Task.FromResult<AppUser>(userToVerify);
+        }
 
+        private ClaimsIdentity GetClaimsIdentity(AppUser user)
+        {
+            return jwtFactory.GenerateClaimsIdentity(user.UserName, user.Id);
         }
     }
 }

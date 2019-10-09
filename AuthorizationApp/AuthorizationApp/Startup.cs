@@ -15,7 +15,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using AutoMapper;
 using FluentValidation.AspNetCore;
@@ -30,6 +29,7 @@ using System.Net;
 using FluentValidation;
 using AuthorizationApp.ViewModels;
 using AuthorizationApp.ViewModels.Validations;
+using AuthorizationApp.Services;
 
 namespace AuthorizationApp
 {
@@ -64,6 +64,12 @@ namespace AuthorizationApp
                 options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
                 }
             );
+
+            services.Configure<AuthMessageSenderOptions>(options =>
+            {
+                options.Password = Configuration["SmtpServer:Password"];
+                options.Gmail = Configuration["SmtpServer:Gmail"];
+            });
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -102,14 +108,19 @@ namespace AuthorizationApp
             
             services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
-           
-            //JwtSecurityTokenHandler.DefaultInboundClaimFilter.Clear();
+
+            /*services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new RequireHttpsAttribute());
+            });*/
 
             services.AddAutoMapper(typeof(Startup));
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
             services.AddTransient<IValidator<CredentialViewModel>, CredentialsViewModelValidator>();
             services.AddTransient<IValidator<RegistrationViewModel>, RegistrationViewModelValidator>();
+
+            services.AddSingleton<IMailSender, AuthMessageSender>();
 
         }
 
@@ -139,6 +150,7 @@ namespace AuthorizationApp
                     );
             });
 
+            app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();

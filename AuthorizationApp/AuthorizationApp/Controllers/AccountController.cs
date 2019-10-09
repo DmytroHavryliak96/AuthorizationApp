@@ -8,21 +8,24 @@ using AuthorizationApp.Models;
 using AuthorizationApp.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using AuthorizationApp.Services;
 
 namespace AuthorizationApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class AccountController : Controller
     {
         private readonly ApplicationContext db;
         private readonly UserManager<AppUser> manager;
         private readonly IMapper mapper;
+        private readonly IMailSender emailService;
 
-        public AccountController(ApplicationContext db, UserManager<AppUser> manager, IMapper mapper)
+        public AccountController(ApplicationContext db, UserManager<AppUser> manager, IMapper mapper, IMailSender sender)
         {
             this.db = db;
             this.manager = manager;
             this.mapper = mapper;
+            emailService = sender;
         }
         
         [HttpPost]
@@ -37,12 +40,45 @@ namespace AuthorizationApp.Controllers
 
             var result = await manager.CreateAsync(userIdentity, model.Password);
 
-            if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
+            var prot = HttpContext.Request.Scheme;
+
+            if (result.Succeeded) 
+            {
+                var code = await manager.GenerateEmailConfirmationTokenAsync(userIdentity);
+                var callbackUrl = Url.Action(
+                    "ConfirmEmail",
+                    "Account",
+                    new { userId = userIdentity.Id, code = code},
+                    protocol: HttpContext.Request.Scheme);
+                await emailService.SendEmailAsync(model.Email, "Confirm your account", 
+                    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+            }
+            else 
+                return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
 
             await db.Customers.AddAsync(new Customer { IdentityId = userIdentity.Id, Location = model.Location });
             await db.SaveChangesAsync();
             
-            return new OkObjectResult("Account created");
+            return new OkObjectResult("Account created. To validate your account, please check your mail");
+        }
+
+        // to do
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if(userId == null || code == null)
+                return BadRequest("Error");
+        
+            var user = await manager.FindByIdAsync(userId);
+            
+            if(user == null)
+                return BadRequest("Error");
+
+            var result = await manager.ConfirmEmailAsync(user, code);
+            if(result.Succeeded)
+                return new OkObjectResult("Your email address is successfully confirmed.");
+            else 
+                return BadRequest("Error");
         }
     }
 }

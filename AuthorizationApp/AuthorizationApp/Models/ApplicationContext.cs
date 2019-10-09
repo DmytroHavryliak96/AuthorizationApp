@@ -14,5 +14,14 @@ namespace AuthorizationApp.Models
         {
             
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .Entity<AppUser>()
+                .HasOne(ap => ap.Customer)
+                .WithOne(c => c.Identity)
+                .HasForeignKey<Customer>(c => c.IdentityId);
+        }
     }
 }
