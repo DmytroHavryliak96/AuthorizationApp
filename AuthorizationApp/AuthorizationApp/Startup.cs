@@ -119,6 +119,8 @@ namespace AuthorizationApp
 
             services.AddTransient<IValidator<CredentialViewModel>, CredentialsViewModelValidator>();
             services.AddTransient<IValidator<RegistrationViewModel>, RegistrationViewModelValidator>();
+            services.AddTransient<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
+            services.AddTransient<IValidator<ResetPasswordViewModel>, ResetPasswordViewModelValidator>();
 
             services.AddSingleton<IMailSender, AuthMessageSender>();
 

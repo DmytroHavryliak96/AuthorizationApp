@@ -40,8 +40,6 @@ namespace AuthorizationApp.Controllers
 
             var result = await manager.CreateAsync(userIdentity, model.Password);
 
-            var prot = HttpContext.Request.Scheme;
-
             if (result.Succeeded) 
             {
                 var code = await manager.GenerateEmailConfirmationTokenAsync(userIdentity);
@@ -62,7 +60,6 @@ namespace AuthorizationApp.Controllers
             return new OkObjectResult("Account created. To validate your account, please check your mail");
         }
 
-        // to do
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
@@ -77,8 +74,52 @@ namespace AuthorizationApp.Controllers
             var result = await manager.ConfirmEmailAsync(user, code);
             if(result.Succeeded)
                 return new OkObjectResult("Your email address is successfully confirmed.");
-            else 
-                return BadRequest("Error");
+            else
+                return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await manager.FindByNameAsync(model.Email);
+                if (user == null || !(await manager.IsEmailConfirmedAsync(user)))
+                {
+                    return BadRequest("Error");
+                }
+
+                string code = await manager.GeneratePasswordResetTokenAsync(user);
+                
+                await emailService.SendEmailAsync(model.Email, "Reset Password",
+                   $"Please reset your password by using this code: {code}");
+            }
+            else
+                return BadRequest(Errors.AddErrorToModelState("email", "Invalid email", ModelState));
+
+            return new OkObjectResult("Please check your email to reset your password.");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var user = await manager.FindByNameAsync(model.Email);
+
+            if (user == null)
+                return BadRequest("Error");
+
+            var result = await manager.ResetPasswordAsync(user, model.Code, model.Password);
+            if (result.Succeeded)
+            {
+                return new OkObjectResult("Your password has been reset");
+            }
+            else 
+                return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
+        }
+
     }
 }
