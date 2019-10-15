@@ -71,6 +71,12 @@ namespace AuthorizationApp
                 options.Gmail = Configuration["SmtpServer:Gmail"];
             });
 
+            services.Configure<GoogleApiOptions>(options =>
+            {
+                options.ClientId = Configuration["ClientId"];
+                options.ClientSecret = Configuration["ClientSecret"];
+            });
+
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
@@ -96,6 +102,10 @@ namespace AuthorizationApp
                congigureOptions.ClaimsIssuer = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Issuer)];
                congigureOptions.TokenValidationParameters = tokenValidationParameters;
                congigureOptions.SaveToken = true;
+           }).AddGoogle(googleOptions =>
+           {
+               googleOptions.ClientId = Configuration["ClientId"];
+               googleOptions.ClientSecret = Configuration["ClientSecret"];
            });
 
             services.AddAuthorization(options =>
