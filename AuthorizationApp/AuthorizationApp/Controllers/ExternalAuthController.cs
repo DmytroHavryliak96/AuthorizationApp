@@ -10,6 +10,8 @@ using AuthorizationApp.Services;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using AuthorizationApp.Services.Interfaces;
+using AuthorizationApp.ViewModels;
+using AutoMapper;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,13 +23,15 @@ namespace AuthorizationApp.Controllers
         private readonly IJwtTokenService jwtService;
         private readonly IMailSender emailService;
         private readonly IExternalLoginService<AppUser> loginService;
+        private readonly IMapper mapper;
 
         public ExternalAuthController(IJwtTokenService jwtService, 
-            IMailSender sender, IExternalLoginService<AppUser> logService)
+            IMailSender sender, IExternalLoginService<AppUser> logService, IMapper mapper)
         {
             this.jwtService = jwtService;
             emailService = sender;
             this.loginService = logService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -105,6 +109,96 @@ namespace AuthorizationApp.Controllers
                 providerDisplayName = info.ProviderDisplayName,
                 providerKey = info.ProviderKey
             });
+        }
+
+        [HttpGet]
+        public async Task<ResultViewModel> Associate([FromBody] AssociateViewModel model) 
+        {
+            if (!model.associateExistingAccount)
+            {
+                var user = mapper.Map<AppUser>(model);
+
+                var createUserResult = await loginService.CreateUserWithoutPassword(user);
+
+                if (createUserResult.Succeeded)
+                {
+                    createUserResult = await loginService.AddLoginAsync(user,
+                        new ExternalLoginInfo(null, model.LoginProvider, model.ProviderKey,
+                        model.ProviderDisplayName));
+
+                    if (createUserResult.Succeeded)
+                    {
+                        user.EmailConfirmed = true;
+                        await loginService.UpdateUser(user);
+
+                        var token = await jwtService.GetJwtToken(user);
+
+                        return new ResultViewModel
+                        {
+                            Status = Status.Success,
+                            Message = $"{user.UserName} has been created successfully",
+                            Data = token
+                        };
+                    }
+
+                }
+
+                var resultErrors = createUserResult.Errors.Select(e => "error description:" + e.Description);
+
+                return new ResultViewModel
+                {
+                    Status = Status.Error,
+                    Message = "Invalid data",
+                    Data = string.Join("", resultErrors)
+                };
+
+            }
+
+            var userEntity = await loginService.FindByEmailAsync(model.AssociateEmail);
+
+            if(userEntity != null)
+            {
+                if (!userEntity.EmailConfirmed)
+                {
+                    return new ResultViewModel
+                    {
+                        Status = Status.Error,
+                        Message = "Invalid data",
+                        Data = $"Associated account {model.AssociateEmail} hasn't been confirmed yet. "
+                        + "Confirm the account and try again"               
+                    };
+                }
+
+                var token = await loginService.GenerateEmailConfirmationTokenAsync(userEntity);
+
+                var callbackUrl = Url.Action("ConfirmExternalProvider", "Account",
+                        values: new
+                        {
+                            userId = userEntity.Id,
+                            code = token,
+                            loginProvider = model.LoginProvider,
+                            providerDisplayName = model.LoginProvider,
+                            providerKey = model.ProviderKey
+                        },
+                        protocol: HttpContext.Request.Scheme);
+
+                await emailService.SendEmailAsync(userEntity.Email, $"Confirm {model.ProviderDisplayName} external login",
+                $"Please confirm association of your {model.ProviderDisplayName} " +
+                $"account by clicking <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>here</a>");
+
+                return new ResultViewModel
+                {
+                    Status = Status.Success,
+                    Message = "External account association is pending. Please check your email"
+                };
+            }
+
+            return new ResultViewModel
+            {
+                Status = Status.Error,
+                Message = "Invalid data",
+                Data = $"User with email {model.AssociateEmail} not found"
+            };
         }
     }
 }

@@ -53,6 +53,11 @@ namespace AuthorizationApp.Services
             return signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, userId);
         }
 
+        public async Task<IdentityResult> CreateUserWithoutPassword(AppUser identity)
+        {
+            return await userManager.CreateAsync(identity);
+        }
+
         public async Task<AppUser> FindByEmailAsync(string email)
         {
             return await userManager.FindByEmailAsync(email);
@@ -77,6 +82,11 @@ namespace AuthorizationApp.Services
         public async Task<ExternalLoginInfo> GetExternalLoginInfoAsync()
         {
             return await signInManager.GetExternalLoginInfoAsync();
+        }
+
+        public async Task<IdentityResult> UpdateUser(AppUser identity)
+        {
+            return await userManager.UpdateAsync(identity);
         }
 
         private async Task<IdentityUserLogin<string>> GetIdentityLogin(string loginProvider, string providerKey)

@@ -15,4 +15,13 @@ namespace AuthorizationApp.ViewModels.Mappings
                 .ForMember(ap => ap.UserName, map => map.MapFrom(vm => vm.Email));
         }
     }
+
+    public class AssociateModelToEntityMappingProfile : Profile
+    {
+        public AssociateModelToEntityMappingProfile()
+        {
+            CreateMap<AssociateViewModel, AppUser>()
+                .ForMember(ap => ap.UserName, map => map.MapFrom(am => am.OriginalEmail));
+        }
+    }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using AuthorizationApp.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -22,5 +23,9 @@ namespace AuthorizationApp.Services.Interfaces
         public AuthenticationProperties ConfigureExternalAuthenticationProperties(string provider, string redirectUrl, string userId = null);
 
         public Task<T> FindByProviderAsync(string loginProvider, string providerKey);
+
+        public Task<IdentityResult> CreateUserWithoutPassword(AppUser identity);
+
+        public Task<IdentityResult> UpdateUser(AppUser identity);
     }
 }
