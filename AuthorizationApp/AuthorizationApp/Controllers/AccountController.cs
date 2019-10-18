@@ -9,6 +9,7 @@ using AuthorizationApp.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using AuthorizationApp.Services;
+using AuthorizationApp.Services.Interfaces;
 
 namespace AuthorizationApp.Controllers
 {
@@ -17,18 +18,18 @@ namespace AuthorizationApp.Controllers
     {
         private readonly ApplicationContext db;
         private readonly UserManager<AppUser> userManager;
-        private readonly SignInManager<AppUser> signInManager;
+        private readonly IJwtTokenService jwtService;
         private readonly IMapper mapper;
         private readonly IMailSender emailService;
 
         public AccountController(ApplicationContext db, UserManager<AppUser> manager, 
-            IMapper mapper, IMailSender sender, SignInManager<AppUser> signin)
+            IMapper mapper, IMailSender sender, IJwtTokenService jwtService)
         {
             this.db = db;
             this.userManager = manager;
             this.mapper = mapper;
             emailService = sender;
-            signInManager = signin;
+            this.jwtService = jwtService;
         }
         
         [HttpPost]
@@ -124,12 +125,23 @@ namespace AuthorizationApp.Controllers
                 return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
         }
 
-        // not completed yet
         [HttpGet]
-        public async Task<IActionResult> ConfirmExternalProvider()
+        public async Task<IActionResult> ConfirmExternalProvider(string userId, string code, 
+            string loginProvider, string providerDisplayName, string providerKey)
         {
-            // to do
-            return new OkObjectResult("message has been added successfully"); 
+            var user = await userManager.FindByIdAsync(userId);
+
+            var confirmatioResult = await userManager.ConfirmEmailAsync(user, code);
+            if(!confirmatioResult.Succeeded)
+                return BadRequest($"{providerDisplayName} failed to associate");
+
+            var newLoginResult = await userManager.AddLoginAsync(user,
+                new ExternalLoginInfo(null, loginProvider, providerKey, providerDisplayName));
+
+            if (!newLoginResult.Succeeded)
+                return BadRequest($"{providerDisplayName} failed to associate");
+
+            return new OkObjectResult($"Your {providerDisplayName} account was successfully associated with your local account"); 
         }
 
     }

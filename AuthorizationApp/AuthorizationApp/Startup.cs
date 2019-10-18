@@ -27,7 +27,7 @@ using AuthorizationApp.Helpers;
 using System.Text;
 using System.Net;
 using AuthorizationApp.Services;
-
+using AuthorizationApp.Services.Interfaces;
 
 namespace AuthorizationApp
 {
@@ -114,17 +114,12 @@ namespace AuthorizationApp
                     policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
                     });
             });
-           
-
-            /*services.Configure<MvcOptions>(options =>
-            {
-                options.Filters.Add(new RequireHttpsAttribute());
-            });*/
 
             services.AddAutoMapper(typeof(Startup));
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
             services.ConfigureTransientServices();
+            services.AddScoped<IExternalLoginService<AppUser>, ExternalLoginService>();
 
             services.AddSingleton<IMailSender, AuthMessageSender>();
 

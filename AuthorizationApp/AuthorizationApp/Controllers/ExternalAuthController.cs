@@ -3,14 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AuthorizationApp.Auth;
-using AuthorizationApp.Extensions;
-using AuthorizationApp.Helpers;
 using AuthorizationApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using AuthorizationApp.Services;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
@@ -23,16 +18,14 @@ namespace AuthorizationApp.Controllers
     [Route("api/[controller]/[action]")]
     public class ExternalAuthController : Controller
     {
-        private readonly IJwtFactory jwtFactory;
-        private readonly JwtIssuerOptions jwtOptions;
+        private readonly IJwtTokenService jwtService;
         private readonly IMailSender emailService;
         private readonly IExternalLoginService<AppUser> loginService;
 
-        public ExternalAuthController(IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions, 
+        public ExternalAuthController(IJwtTokenService jwtService, 
             IMailSender sender, IExternalLoginService<AppUser> logService)
         {
-            this.jwtFactory = jwtFactory;
-            this.jwtOptions = jwtOptions.Value;
+            this.jwtService = jwtService;
             emailService = sender;
             this.loginService = logService;
         }
@@ -62,7 +55,7 @@ namespace AuthorizationApp.Controllers
             if (result)
             {
                 var signedUser = await loginService.FindByEmailAsync(info.Principal.FindFirstValue(ClaimTypes.Email));
-                return new OkObjectResult(await GetJwtOnSuccess(signedUser));
+                return new OkObjectResult(await jwtService.GetJwtToken(signedUser));
             }
                
             var userEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
@@ -100,10 +93,7 @@ namespace AuthorizationApp.Controllers
 
                 await loginService.AddLoginAsync(user, info);
 
-                return new OkObjectResult(new { 
-                   result = await GetJwtOnSuccess(user), 
-                   message = "External login was successfully added"
-                });
+                return new OkObjectResult(await jwtService.GetJwtToken(user));
 
             }
 
@@ -115,15 +105,6 @@ namespace AuthorizationApp.Controllers
                 providerDisplayName = info.ProviderDisplayName,
                 providerKey = info.ProviderKey
             });
-        }
-
-        private async Task<string> GetJwtOnSuccess(AppUser identity)
-        {
-            var jwt = await Tokens.GenerateJwt(jwtFactory.GenerateClaimsIdentity(identity.UserName, identity.Id), jwtFactory, identity.UserName, jwtOptions, new JsonSerializerSettings()
-            {
-                Formatting = Formatting.Indented
-            });
-            return jwt;
         }
     }
 }

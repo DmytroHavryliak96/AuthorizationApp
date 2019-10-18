@@ -20,8 +20,8 @@ namespace AuthorizationApp.Extensions
             services.AddTransient<IValidator<RegistrationViewModel>, RegistrationViewModelValidator>();
             services.AddTransient<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
             services.AddTransient<IValidator<ResetPasswordViewModel>, ResetPasswordViewModelValidator>();
+            services.AddTransient<IJwtTokenService, JwtTokenService>();
 
-            services.AddScoped<IExternalLoginService<AppUser>, ExternalLoginService>();
         }
     }
 }
