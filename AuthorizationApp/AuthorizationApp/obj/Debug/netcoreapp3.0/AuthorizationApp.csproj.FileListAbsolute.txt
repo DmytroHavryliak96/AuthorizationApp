@@ -124,5 +124,6 @@ D:\Projects\AuthorizationApp\AuthorizationApp\AuthorizationApp\bin\Debug\netcore
 D:\Projects\AuthorizationApp\AuthorizationApp\AuthorizationApp\bin\Debug\netcoreapp3.0\MailKit.dll
 D:\Projects\AuthorizationApp\AuthorizationApp\AuthorizationApp\bin\Debug\netcoreapp3.0\MimeKit.dll
 D:\Projects\AuthorizationApp\AuthorizationApp\AuthorizationApp\bin\Debug\netcoreapp3.0\BouncyCastle.Crypto.dll
+D:\Projects\AuthorizationApp\AuthorizationApp\AuthorizationApp\bin\Debug\netcoreapp3.0\Microsoft.AspNetCore.Authentication.Google.dll
 D:\Projects\AuthorizationApp\AuthorizationApp\AuthorizationApp\obj\Debug\netcoreapp3.0\AuthorizationApp.MvcApplicationPartsAssemblyInfo.cs
 D:\Projects\AuthorizationApp\AuthorizationApp\AuthorizationApp\obj\Debug\netcoreapp3.0\AuthorizationApp.MvcApplicationPartsAssemblyInfo.cache

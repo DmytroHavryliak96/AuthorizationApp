@@ -26,10 +26,8 @@ using AuthorizationApp.Extensions;
 using AuthorizationApp.Helpers;
 using System.Text;
 using System.Net;
-using FluentValidation;
-using AuthorizationApp.ViewModels;
-using AuthorizationApp.ViewModels.Validations;
 using AuthorizationApp.Services;
+
 
 namespace AuthorizationApp
 {
@@ -87,15 +85,26 @@ namespace AuthorizationApp
                 ClockSkew = TimeSpan.Zero
             };
 
+
+            services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(congigureOptions =>
            {
+               
                congigureOptions.ClaimsIssuer = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Issuer)];
                congigureOptions.TokenValidationParameters = tokenValidationParameters;
                congigureOptions.SaveToken = true;
+           }).AddGoogle("Google", options => 
+           {
+               options.CallbackPath = new PathString("/google-callback");
+               options.ClientId = Configuration["ClientId"];
+               options.ClientSecret = Configuration["ClientSecret"];
+
            });
 
             services.AddAuthorization(options =>
@@ -105,9 +114,7 @@ namespace AuthorizationApp
                     policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
                     });
             });
-            
-            services.AddIdentity<AppUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationContext>().AddDefaultTokenProviders();
+           
 
             /*services.Configure<MvcOptions>(options =>
             {
@@ -117,10 +124,7 @@ namespace AuthorizationApp
             services.AddAutoMapper(typeof(Startup));
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
-            services.AddTransient<IValidator<CredentialViewModel>, CredentialsViewModelValidator>();
-            services.AddTransient<IValidator<RegistrationViewModel>, RegistrationViewModelValidator>();
-            services.AddTransient<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
-            services.AddTransient<IValidator<ResetPasswordViewModel>, ResetPasswordViewModelValidator>();
+            services.ConfigureTransientServices();
 
             services.AddSingleton<IMailSender, AuthMessageSender>();
 

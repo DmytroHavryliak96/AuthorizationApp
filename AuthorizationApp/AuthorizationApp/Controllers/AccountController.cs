@@ -16,16 +16,19 @@ namespace AuthorizationApp.Controllers
     public class AccountController : Controller
     {
         private readonly ApplicationContext db;
-        private readonly UserManager<AppUser> manager;
+        private readonly UserManager<AppUser> userManager;
+        private readonly SignInManager<AppUser> signInManager;
         private readonly IMapper mapper;
         private readonly IMailSender emailService;
 
-        public AccountController(ApplicationContext db, UserManager<AppUser> manager, IMapper mapper, IMailSender sender)
+        public AccountController(ApplicationContext db, UserManager<AppUser> manager, 
+            IMapper mapper, IMailSender sender, SignInManager<AppUser> signin)
         {
             this.db = db;
-            this.manager = manager;
+            this.userManager = manager;
             this.mapper = mapper;
             emailService = sender;
+            signInManager = signin;
         }
         
         [HttpPost]
@@ -38,11 +41,11 @@ namespace AuthorizationApp.Controllers
 
             var userIdentity = mapper.Map<AppUser>(model);
 
-            var result = await manager.CreateAsync(userIdentity, model.Password);
+            var result = await userManager.CreateAsync(userIdentity, model.Password);
 
             if (result.Succeeded) 
             {
-                var code = await manager.GenerateEmailConfirmationTokenAsync(userIdentity);
+                var code = await userManager.GenerateEmailConfirmationTokenAsync(userIdentity);
                 var callbackUrl = Url.Action(
                     "ConfirmEmail",
                     "Account",
@@ -66,12 +69,12 @@ namespace AuthorizationApp.Controllers
             if(userId == null || code == null)
                 return BadRequest("Error");
         
-            var user = await manager.FindByIdAsync(userId);
+            var user = await userManager.FindByIdAsync(userId);
             
             if(user == null)
                 return BadRequest("Error");
 
-            var result = await manager.ConfirmEmailAsync(user, code);
+            var result = await userManager.ConfirmEmailAsync(user, code);
             if(result.Succeeded)
                 return new OkObjectResult("Your email address is successfully confirmed.");
             else
@@ -83,13 +86,13 @@ namespace AuthorizationApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await manager.FindByNameAsync(model.Email);
-                if (user == null || !(await manager.IsEmailConfirmedAsync(user)))
+                var user = await userManager.FindByNameAsync(model.Email);
+                if (user == null || !(await userManager.IsEmailConfirmedAsync(user)))
                 {
                     return BadRequest("Error");
                 }
 
-                string code = await manager.GeneratePasswordResetTokenAsync(user);
+                string code = await userManager.GeneratePasswordResetTokenAsync(user);
                 
                 await emailService.SendEmailAsync(model.Email, "Reset Password",
                    $"Please reset your password by using this code: {code}");
@@ -107,18 +110,26 @@ namespace AuthorizationApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var user = await manager.FindByNameAsync(model.Email);
+            var user = await userManager.FindByNameAsync(model.Email);
 
             if (user == null)
                 return BadRequest("Error");
 
-            var result = await manager.ResetPasswordAsync(user, model.Code, model.Password);
+            var result = await userManager.ResetPasswordAsync(user, model.Code, model.Password);
             if (result.Succeeded)
             {
                 return new OkObjectResult("Your password has been reset");
             }
             else 
                 return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
+        }
+
+        // not completed yet
+        [HttpGet]
+        public async Task<IActionResult> ConfirmExternalProvider()
+        {
+            // to do
+            return new OkObjectResult("message has been added successfully"); 
         }
 
     }

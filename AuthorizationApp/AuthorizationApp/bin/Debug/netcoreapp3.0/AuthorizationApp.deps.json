@@ -28,6 +28,7 @@
           "FluentValidation.AspNetCore": "8.5.0",
           "FluentValidation.ValidatorAttribute": "8.5.0",
           "MailKit": "2.3.1.6",
+          "Microsoft.AspNetCore.Authentication.Google": "3.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "3.0.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.0.0",
           "Microsoft.EntityFrameworkCore": "3.0.0",
@@ -432,6 +433,17 @@
         },
         "compile": {
           "lib/netstandard2.0/MailKit.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Google/3.0.0": {
+        "runtime": {
+          "lib/netcoreapp3.0/Microsoft.AspNetCore.Authentication.Google.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.19.46502"
+          }
+        },
+        "compile": {
+          "lib/netcoreapp3.0/Microsoft.AspNetCore.Authentication.Google.dll": {}
         }
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer/3.0.0": {
@@ -4099,6 +4111,13 @@
       "sha512": "sha512-BVaknMQO+AfNnj8XM7b8/CPOhHSw9P+H6uVJjFo5qd+/3gvmBKsD+w5ql2uIsSu4bIZDfrp8uxr/9hGjJE3Y2A==",
       "path": "mailkit/2.3.1.6",
       "hashPath": "mailkit.2.3.1.6.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.Google/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-u35Ht7mTTGiEbrU6MuzxnNjuLmkSB9+oOYIoDmS2w7tgU9w8JZVnpE08eJl3+hP8SShrVuKc4Eoup75bPs29cQ==",
+      "path": "microsoft.aspnetcore.authentication.google/3.0.0",
+      "hashPath": "microsoft.aspnetcore.authentication.google.3.0.0.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Authentication.JwtBearer/3.0.0": {
       "type": "package",
