@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AuthorizationApp.Helpers;
@@ -9,7 +7,7 @@ using AuthorizationApp.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using AuthorizationApp.Services;
-using AuthorizationApp.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AuthorizationApp.Controllers
 {
@@ -18,18 +16,16 @@ namespace AuthorizationApp.Controllers
     {
         private readonly ApplicationContext db;
         private readonly UserManager<AppUser> userManager;
-        private readonly IJwtTokenService jwtService;
         private readonly IMapper mapper;
         private readonly IMailSender emailService;
 
         public AccountController(ApplicationContext db, UserManager<AppUser> manager, 
-            IMapper mapper, IMailSender sender, IJwtTokenService jwtService)
+            IMapper mapper, IMailSender sender)
         {
             this.db = db;
             this.userManager = manager;
             this.mapper = mapper;
             emailService = sender;
-            this.jwtService = jwtService;
         }
         
         [HttpPost]
@@ -143,6 +139,59 @@ namespace AuthorizationApp.Controllers
 
             return new OkObjectResult($"Your {providerDisplayName} account was successfully associated with your local account"); 
         }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> IsAuthentificated()
+        {
+            var user = await userManager.FindByIdAsync(User.Claims.Single(c => c.Type == "id").Value);
+            return new OkObjectResult(new
+            {
+                isAuthentificated = true,
+                Username = user.UserName,
+                DisplaySetPassword = !(await userManager.HasPasswordAsync(user))                
+            });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<ResultViewModel> ManagePassword ([FromBody] UpdatePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByIdAsync(User.Claims.Single(c => c.Type == "id").Value);
+
+                var result = await userManager.AddPasswordAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    return new ResultViewModel
+                    {
+                        Status = Status.Success,
+                        Message = "Password has been updated successfully"
+                    };
+                }
+
+                var errors = result.Errors.Select(e => "description = " + e.Description);
+
+                return new ResultViewModel
+                {
+                    Status = Status.Error,
+                    Message = "Invalid data",
+                    Data = string.Join("", errors)
+                };
+            }
+            else
+            {
+                var errors = ModelState.Keys.Select(e => "description = " + e);
+                return new ResultViewModel
+                {
+                    Status = Status.Error,
+                    Message = "Invalid data",
+                    Data = string.Join("", errors)
+                };
+            }
+        } 
 
     }
 }

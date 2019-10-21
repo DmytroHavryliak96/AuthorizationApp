@@ -20,6 +20,8 @@ namespace AuthorizationApp.Extensions
             services.AddTransient<IValidator<RegistrationViewModel>, RegistrationViewModelValidator>();
             services.AddTransient<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
             services.AddTransient<IValidator<ResetPasswordViewModel>, ResetPasswordViewModelValidator>();
+            services.AddTransient<IValidator<UpdatePasswordViewModel>, UpdatePasswordViewModelValidator>();
+
             services.AddTransient<IJwtTokenService, JwtTokenService>();
 
         }
