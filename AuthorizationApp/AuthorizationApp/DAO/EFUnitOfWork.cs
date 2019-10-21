@@ -13,6 +13,7 @@ namespace AuthorizationApp.DAO
         private readonly ApplicationContext db;
 
         private CustomerRepository customerRepository;
+
         
         public EFUnitOfWork(ApplicationContext context)
         {
@@ -32,14 +33,29 @@ namespace AuthorizationApp.DAO
             } 
         }
 
+        public virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    db.Dispose();
+                }
+                this.disposed = true;
+            }
+        }
+
         public void Dispose()
         {
-            throw new NotImplementedException();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            db.SaveChanges();
         }
+
+        private bool disposed = false;
     }
 }

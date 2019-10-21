@@ -27,5 +27,7 @@ namespace AuthorizationApp.Services.Interfaces
         public Task<IdentityResult> CreateUserWithoutPassword(AppUser identity);
 
         public Task<IdentityResult> UpdateUser(AppUser identity);
+
+        void CreateCustomer(Customer model);
     }
 }

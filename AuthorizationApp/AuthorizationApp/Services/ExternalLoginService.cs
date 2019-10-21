@@ -94,5 +94,10 @@ namespace AuthorizationApp.Services
             return await Task.Run(() => db.IdentityUserLogins.Where(login => login.LoginProvider.Equals(loginProvider)
                                                    && login.ProviderKey.Equals(providerKey)).FirstOrDefault());
         }
+
+        public async void CreateCustomer(Customer model)
+        {
+            await this.db.Customers.AddAsync(model);
+        }
     }
 }

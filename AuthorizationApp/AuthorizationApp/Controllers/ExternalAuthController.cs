@@ -24,6 +24,7 @@ namespace AuthorizationApp.Controllers
         private readonly IMailSender emailService;
         private readonly IExternalLoginService<AppUser> loginService;
         private readonly IMapper mapper;
+        //private readonly IUnitOfWork database;
 
         public ExternalAuthController(IJwtTokenService jwtService, 
             IMailSender sender, IExternalLoginService<AppUser> logService, IMapper mapper)
@@ -111,7 +112,7 @@ namespace AuthorizationApp.Controllers
             });
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<ResultViewModel> Associate([FromBody] AssociateViewModel model) 
         {
             if (!model.associateExistingAccount)
@@ -122,6 +123,17 @@ namespace AuthorizationApp.Controllers
 
                 if (createUserResult.Succeeded)
                 {
+                    if(model.Location == null)
+                        return new ResultViewModel
+                        {
+                            Status = Status.Error,
+                            Message = $"user location cannot be null",
+                        };
+
+                    var userId = (await loginService.FindByEmailAsync(user.Email)).Id;
+                    var cm = new Customer { IdentityId = userId, Location = model.Location };
+                    loginService.CreateCustomer(cm);
+
                     createUserResult = await loginService.AddLoginAsync(user,
                         new ExternalLoginInfo(null, model.LoginProvider, model.ProviderKey,
                         model.ProviderDisplayName));
@@ -177,7 +189,7 @@ namespace AuthorizationApp.Controllers
                             userId = userEntity.Id,
                             code = token,
                             loginProvider = model.LoginProvider,
-                            providerDisplayName = model.LoginProvider,
+                            providerDisplayName = model.ProviderDisplayName,
                             providerKey = model.ProviderKey
                         },
                         protocol: HttpContext.Request.Scheme);
